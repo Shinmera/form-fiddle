@@ -8,6 +8,7 @@ There's individual functions to extract each part of a lambda-definition-form: f
 
     (split-lambda-form '(defun lambda-body (lambda-form)
                           (cddr lambda-form)))
+
     (with-destructured-lambda-form (:forms forms)
         '(defmacro foo (bar)
            (declare (ignore bar))
