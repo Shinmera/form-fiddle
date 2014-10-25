@@ -16,3 +16,6 @@ There's individual functions to extract each part of a lambda-definition-form: f
            (print "test!"))
       forms)
 
+See Also
+--------
+* [Lambda-Fiddle](https://shinmera.github.io/lambda-fiddle) To destructure lambda-lists.
