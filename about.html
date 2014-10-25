@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8"/>
+    <title>FORM-FIDDLE</title>
+    <style type="text/css">
+      code a{text-decoration:none;}
+      h1{display:inline-block;font-size: 28pt;margin-bottom:0;}
+      code{font-family: Consolas, Inconsolata, monospace;}
+      h4{display: inline-block;margin:0;padding:0;}
+      #symbol-index ul{list-style: none;}
+      .package li{margin-bottom: 20px;}
+      .package pre{margin: 0 0 0 10px; white-space: pre-wrap;}
+      .package .nicknames{font-size: 12pt; font-weight: normal;}
+      table{margin: 20px;}
+      td{padding-bottom: 10px;}
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>form-fiddle</h1>
+      <span>1.0.0</span>
+      <p>A collection of utilities to destructure lambda forms.</p>
+    </header>
+    <div id="content">
+      <article>
+        <c:documentate>
+          <span><h2>About Form-Fiddle</h2>
+
+<p>Often times I need to destructure a form definition in a macro. This is a set of simple utilities to help with that.</p>
+
+<h2>How To</h2>
+
+<p>There's individual functions to extract each part of a lambda-definition-form: function, name, qualifiers, lambda-list, body, declarations, docstring and the forms. You can get all in one with <code><a href="#FORM-FIDDLE:SPLIT-LAMBDA-FORM">split-lambda-form</a></code>, or directly as a binding macro with <code><a href="#FORM-FIDDLE:WITH-DESTRUCTURED-LAMBDA-FORM">with-destructured-lambda-form</a></code>.</p>
+
+<pre><code>(<a href="#FORM-FIDDLE:SPLIT-LAMBDA-FORM">split-lambda-form</a> '(<a href="http://l1sp.org/cl/defun">defun</a> lambda-body (lambda-form)
+                      (<a href="http://l1sp.org/cl/cddr">cddr</a> lambda-form)))
+(<a href="#FORM-FIDDLE:WITH-DESTRUCTURED-LAMBDA-FORM">with-destructured-lambda-form</a> (:forms forms)
+    '(<a href="http://l1sp.org/cl/defmacro">defmacro</a> foo (bar)
+       (<a href="http://l1sp.org/cl/declare">declare</a> (<a href="http://l1sp.org/cl/ignore">ignore</a> bar))
+       &quot;Testing macro!&quot;
+       (<a href="http://l1sp.org/cl/print">print</a> &quot;test!&quot;))
+  forms)
+</code></pre>
+</span>
+        </c:documentate>
+      </article>
+      <article>
+        <h2>Copyright</h2>
+        <span>form-fiddle</span> is licensed under the <span><a href="https://tldrlegal.com/search?q=Artistic">Artistic</a></span> license and ©<span>2014</span> <span>Nicolas Hafner &lt;shinmera@tymoon.eu&gt;</span>. This library can be obtained on <a href="https://github.com/Shinmera/form-fiddle">https://github.com/Shinmera/form-fiddle</a>.
+      </article>
+      <article id="symbol-index">
+        <h2>Package Index</h2>
+        <ul><li class="package">
+            <h3>
+              <a name="FORM-FIDDLE" href="#FORM-FIDDLE">FORM-FIDDLE</a>
+              <span class="nicknames">(ORG.SHIRAKUMO.FORM-FIDDLE)</span>
+            </h3>
+            <ul><li>
+                <a name="FORM-FIDDLE:LAMBDA-BODY"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#FORM-FIDDLE:LAMBDA-BODY">LAMBDA-BODY</a></h4>
+                      <span/>
+                      <span>(LAMBDA-FORM)</span>
+                    </code>
+                  </header>
+                  <pre>Returns all BODY forms of the lambda-form.
+
+                                         |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯v¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
+ (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)</pre>
+                </article>
+              </li><li>
+                <a name="FORM-FIDDLE:LAMBDA-DECLARATIONS"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#FORM-FIDDLE:LAMBDA-DECLARATIONS">LAMBDA-DECLARATIONS</a></h4>
+                      <span/>
+                      <span>(LAMBDA-FORM)</span>
+                    </code>
+                  </header>
+                  <pre>Returns the DECLARATIONS of the lambda-form, if any.
+
+                                                             v
+ (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)</pre>
+                </article>
+              </li><li>
+                <a name="FORM-FIDDLE:LAMBDA-DOCSTRING"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#FORM-FIDDLE:LAMBDA-DOCSTRING">LAMBDA-DOCSTRING</a></h4>
+                      <span/>
+                      <span>(LAMBDA-FORM)</span>
+                    </code>
+                  </header>
+                  <pre>Returns the DOCSTRING of the lambda-form, if any.
+
+                                               v
+ (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)</pre>
+                </article>
+              </li><li>
+                <a name="FORM-FIDDLE:LAMBDA-FORMS"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#FORM-FIDDLE:LAMBDA-FORMS">LAMBDA-FORMS</a></h4>
+                      <span/>
+                      <span>(LAMBDA-FORM)</span>
+                    </code>
+                  </header>
+                  <pre>Returns the actual body forms of the lambda-form, if any.
+
+                                                                         v
+ (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)</pre>
+                </article>
+              </li><li>
+                <a name="FORM-FIDDLE:LAMBDA-FUNCTION"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#FORM-FIDDLE:LAMBDA-FUNCTION">LAMBDA-FUNCTION</a></h4>
+                      <span/>
+                      <span>(LAMBDA-FORM)</span>
+                    </code>
+                  </header>
+                  <pre>Returns the defining FUNCTION of the lambda-form.
+     v
+ (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)</pre>
+                </article>
+              </li><li>
+                <a name="FORM-FIDDLE:LAMBDA-LAMBDA-LIST"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#FORM-FIDDLE:LAMBDA-LAMBDA-LIST">LAMBDA-LAMBDA-LIST</a></h4>
+                      <span/>
+                      <span>(LAMBDA-FORM)</span>
+                    </code>
+                  </header>
+                  <pre>Returns the LAMBDA-LIST of the lambda-form.
+
+                                  v
+ (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)</pre>
+                </article>
+              </li><li>
+                <a name="FORM-FIDDLE:LAMBDA-NAME"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#FORM-FIDDLE:LAMBDA-NAME">LAMBDA-NAME</a></h4>
+                      <span/>
+                      <span>(LAMBDA-FORM)</span>
+                    </code>
+                  </header>
+                  <pre>Returns the NAME of the lambda-form, if any.
+
+             v
+ (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)</pre>
+                </article>
+              </li><li>
+                <a name="FORM-FIDDLE:LAMBDA-QUALIFIERS"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#FORM-FIDDLE:LAMBDA-QUALIFIERS">LAMBDA-QUALIFIERS</a></h4>
+                      <span/>
+                      <span>(LAMBDA-FORM)</span>
+                    </code>
+                  </header>
+                  <pre>Returns the QUALIFIERS of the lambda-form.
+
+                      v
+ (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)</pre>
+                </article>
+              </li><li>
+                <a name="FORM-FIDDLE:SPLIT-LAMBDA-FORM"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#FORM-FIDDLE:SPLIT-LAMBDA-FORM">SPLIT-LAMBDA-FORM</a></h4>
+                      <span/>
+                      <span>(LAMBDA-FORM)</span>
+                    </code>
+                  </header>
+                  <pre>Returns all parts of a lambda-form as a list in the following order:
+
+ FUNCTION NAME QUALIFIERS LAMBDA-LIST DOCSTRING DECLARATIONS FORMS</pre>
+                </article>
+              </li><li>
+                <a name="FORM-FIDDLE:WITH-DESTRUCTURED-LAMBDA-FORM"/>
+                <article>
+                  <header>
+                    <span>MACRO</span>
+                    <code>
+                      <h4><a href="#FORM-FIDDLE:WITH-DESTRUCTURED-LAMBDA-FORM">WITH-DESTRUCTURED-LAMBDA-FORM</a></h4>
+                      <span/>
+                      <span>((&amp;KEY FUNCTION NAME QUALIFIERS LAMBDA-LIST DOCSTRING DECLARATIONS FORMS)
+ EXPRESSION &amp;BODY BODY)</span>
+                    </code>
+                  </header>
+                  <pre>Destructures the given EXPRESSION into its lambda-form parts.</pre>
+                </article>
+              </li></ul>
+          </li></ul>
+      </article>
+    </div>
+  </body>
+</html>
