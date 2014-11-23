@@ -21,6 +21,12 @@
    #:with-destructured-lambda-form))
 (in-package #:form-fiddle)
 
+(defun declaration-p (form)
+  (and (listp form) (eql 'declare (first form))))
+
+(defun docstring-p (form)
+  (stringp form))
+
 (defun lambda-function (lambda-form)
   "Returns the defining FUNCTION of the lambda-form.
      v
@@ -70,12 +76,13 @@
                                                v
  (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)"
   (let ((body (lambda-body lambda-form)))
-    (if (stringp (first body))
-        (first body)
-        (loop for form in body
-              while (and (listp form) (eql 'declare (first form)))
-              finally (when (stringp form)
-                        (return form))))))
+    (loop ;; The last expression in a form cannot be a docstring.
+          ;; (lambda (foo) "bar") => no docstring, returns "bar".
+          for i from 0 below (1- (length body))
+          for form in body
+          while (declaration-p form)
+          finally (when (stringp form)
+                    (return form)))))
 
 (defun lambda-declarations (lambda-form)
   "Returns the DECLARATIONS of the lambda-form, if any.
@@ -86,8 +93,9 @@
     (when (stringp (first body))
       (setf body (cdr body)))
     (loop for form in body
-          while (and (listp form)
-                     (eql 'declare (first form)))
+          while (or (declaration-p form)
+                    (docstring-p form))
+          when (declaration-p form)
           collect form)))
 
 (defun lambda-forms (lambda-form)
@@ -95,15 +103,14 @@
 
                                                                          v
  (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)"
-  (let* ((body (lambda-body lambda-form))
-         (doc-first (when (stringp (first body))
-                      (setf body (cdr body)) T)))
+  (let* ((body (lambda-body lambda-form)))
     (loop for forms on body
-          for form = (car forms)
-          while (and (listp form)
-                     (eql 'declare (first form)))
+          for form = (car body)
+          for i from 0 below (1- (length body))
+          while (or (declaration-p form)
+                    (docstring-p form))
           finally (return
-                    (if (and (not doc-first) (stringp (car forms)))
+                    (if (declaration-p (car forms))
                         (cdr forms)
                         forms)))))
 
@@ -130,28 +137,56 @@
                        (list name
                              qualifiers
                              form))))
-     ;; Now we go on to parsing the body we reached
-     ;; here we check if the first is a string, if so,
-     ;; set the docstring. Then loop and gather decl
-     ;; until we reach something that isn't a declaration.
-     ;; If we then have already had a string, just use
-     ;; everything else as body. If not, check if it's
-     ;; a string and pop that.
-     (let* ((docstring (when (stringp (first body))
-                         (prog1 (first body)
-                           (setf body (cdr body))))))
-       (loop for forms on body
-             for form = (car forms)
-             while (and (listp form)
-                        (eql 'declare (first form)))
-             collect form into declarations
-             finally (return
-                       (progn
-                         (when (and (not docstring) (stringp (first forms)))
-                           (setf docstring (pop forms)))
-                         (list docstring
-                               declarations
-                               forms))))))))
+     ;; Now we go on to parsing the body we reached.
+     ;; This is annoying because of the interleaving
+     ;; of docstrings and declarations.
+     ;; F.e. the following is a body with two
+     ;; declarations, a docstring and a form:
+     ;;
+     ;;   (declare) "foo" (declare) "bar"
+     ;;
+     ;; And this is a body with one declaration, a
+     ;; docstring and a form:
+     ;;
+     ;;   (declare) "foo" "bar"
+     ;;
+     ;; But this is only a declaration and a form:
+     ;;
+     ;;   (declare) "foo"
+     ;;
+     ;; To make matters even more complicated, the
+     ;; following has three decls, one docstring, and
+     ;; a form. The consequences of multiple docstrings
+     ;; like this are undefined as per the hyperspec,
+     ;; but it seems allowed so we have to deal.
+     ;;
+     ;;   (declare) "foo" (declare) "bar" (declare) "baz"
+     ;;
+     ;; On the other hand, something like this has
+     ;; one decl, one docstring and three forms.
+     ;;
+     ;;   (declare) "foo" "bar" (declare) "baz"
+     ;;
+     ;; Or at least that's what I'm guessing is the
+     ;; intended behaviour suggested by 3.4.11 .
+     ;;
+     ;; We opt to choose the first occurring docstring.
+     (loop with docstring = NIL
+           for forms on body
+           for form = (car forms)
+           for i from 0 below (1- (length body))
+           while (or (and (docstring-p form)
+                          (or (not docstring)
+                              (not (docstring-p (car (cdr forms))))))
+                     (declaration-p form))
+           if (docstring-p form)
+           do (setf docstring (or docstring form))
+           else
+           collect form into declarations
+           finally (return
+                     (if (declaration-p (car forms))
+                         (list docstring (append declarations (list (car forms))) (cdr forms))
+                         (list docstring declarations forms)))))))
 
 (defmacro with-destructured-lambda-form ((&key function name qualifiers lambda-list docstring declarations forms) expression &body body)
   "Destructures the given EXPRESSION into its lambda-form parts."
