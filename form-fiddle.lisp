@@ -116,27 +116,23 @@
 
 (defun split-lambda-form (lambda-form)
   "Returns all parts of a lambda-form as a list in the following order:
-
  FUNCTION NAME QUALIFIERS LAMBDA-LIST DOCSTRING DECLARATIONS FORMS"
-  (let ((body lambda-form))
+  (let ((body lambda-form)
+        (lambda-p (eql (first lambda-form) 'lambda)))
     (append
-     (list (first body))
+     (list (pop body))
      ;; First is name, rest are qualifiers
      ;; until we reach a list, which must be
      ;; the lambda-list of the form.
-     (loop with name = NIL
-           for form = (car (setf body (cdr body)))
+     (if lambda-p
+         (list NIL)
+         (list (pop body)))
+     (loop for form = (pop body)
            until (listp form)
-           if name
            collect form into qualifiers
-           else
-           do (setf name form)
            finally (return
-                     (progn
-                       (setf body (cdr body))
-                       (list name
-                             qualifiers
-                             form))))
+                     (list qualifiers
+                           form)))
      ;; Now we go on to parsing the body we reached.
      ;; This is annoying because of the interleaving
      ;; of docstrings and declarations.
