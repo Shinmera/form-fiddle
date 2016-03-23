@@ -184,3 +184,19 @@
                                 unless (symbol-package symb)
                                 collect symb)))
        ,@body)))
+
+(defun split-body-options (body)
+  (values (loop for list = body then rest
+                for (key val . rest) = list
+                while (and (cdr list) (keywordp key))
+                collect key collect val
+                finally (setf body list))
+          body))
+
+(defmacro with-body-options ((body other-options &rest options) form &body body-forms)
+  (let ((all-options (gensym "OPTIONS"))
+        (option-keywords (loop for opt in options collect (intern (if (listp opt) (first opt) opt) "KEYWORD"))))
+    `(multiple-value-bind (,all-options ,body) (deeds::parse-into-kargs-and-body ,form)
+       (destructuring-bind (&key ,@options) ,all-options
+         (let ((,other-options (deeds::removef ,options ,@option-keywords)))
+           ,@body-forms)))))
