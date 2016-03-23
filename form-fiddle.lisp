@@ -13,53 +13,30 @@
   (stringp form))
 
 (defun lambda-function (lambda-form)
-  "Returns the defining FUNCTION of the lambda-form.
-     v
- (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)"
   (first lambda-form))
 
 (defun lambda-name (lambda-form)
-  "Returns the NAME of the lambda-form, if any.
-
-             v
- (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)"
   (unless (listp (second lambda-form))
     (second lambda-form)))
 
 (defun lambda-qualifiers (lambda-form)
-  "Returns the QUALIFIERS of the lambda-form.
-
-                      v
- (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)"
   (unless (listp (second lambda-form))
     (loop for item in (cddr lambda-form)
           until (listp item)
           collect item)))
 
 (defun lambda-lambda-list (lambda-form)
-  "Returns the LAMBDA-LIST of the lambda-form.
-
-                                  v
- (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)"
   (loop for item in lambda-form
         when (listp item)
         do (return item)))
 
 (defun lambda-body (lambda-form)
-  "Returns all BODY forms of the lambda-form.
-
-                                         |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯v¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
- (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)"
   (loop for body on lambda-form
         ;; Once we encounter the lambda-list, return the following.
         when (listp (first body))
         do (return (cdr body))))
 
 (defun lambda-docstring (lambda-form)
-  "Returns the DOCSTRING of the lambda-form, if any.
-
-                                               v
- (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)"
   (let ((body (lambda-body lambda-form)))
     (loop ;; The last expression in a form cannot be a docstring.
           ;; (lambda (foo) "bar") => no docstring, returns "bar".
@@ -70,10 +47,6 @@
                     (return form)))))
 
 (defun lambda-declarations (lambda-form)
-  "Returns the DECLARATIONS of the lambda-form, if any.
-
-                                                             v
- (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)"
   (let ((body (lambda-body lambda-form)))
     (when (stringp (first body))
       (setf body (cdr body)))
@@ -84,10 +57,6 @@
           collect form)))
 
 (defun lambda-forms (lambda-form)
-  "Returns the actual body forms of the lambda-form, if any.
-
-                                                                         v
- (function [name] qualifier* lambda-list [[docstring? | declaration*]] form*)"
   (let* ((body (lambda-body lambda-form)))
     (loop for forms on body
           for form = (car body)
@@ -100,8 +69,6 @@
                         forms)))))
 
 (defun split-lambda-form (lambda-form)
-  "Returns all parts of a lambda-form as a list in the following order:
- FUNCTION NAME QUALIFIERS LAMBDA-LIST DOCSTRING DECLARATIONS FORMS"
   (let ((body lambda-form)
         (lambda-p (eql (first lambda-form) 'lambda)))
     (append
@@ -170,7 +137,6 @@
                          (list docstring declarations forms)))))))
 
 (defmacro with-destructured-lambda-form ((&key function name qualifiers lambda-list docstring declarations forms) expression &body body)
-  "Destructures the given EXPRESSION into its lambda-form parts."
   (let ((bindings (list (or function (gensym "FUNCTION"))
                         (or name (gensym "NAME"))
                         (or qualifiers (gensym "QUALIFIERS"))

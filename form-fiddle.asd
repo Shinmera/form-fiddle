@@ -14,5 +14,7 @@
   :description "A collection of utilities to destructure lambda forms."
   :homepage "https://github.com/Shinmera/form-fiddle"
   :serial T
-  :components ((:file "form-fiddle"))
-  :depends-on ())
+  :components ((:file "package")
+               (:file "form-fiddle")
+               (:file "documentation"))
+  :depends-on (:documentation-utils))
