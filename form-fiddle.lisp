@@ -160,9 +160,11 @@
           body))
 
 (defmacro with-body-options ((body other-options &rest options) form &body body-forms)
-  (let ((all-options (gensym "OPTIONS"))
-        (option-keywords (loop for opt in options collect (intern (if (listp opt) (first opt) opt) "KEYWORD"))))
-    `(multiple-value-bind (,all-options ,body) (deeds::parse-into-kargs-and-body ,form)
-       (destructuring-bind (&key ,@options) ,all-options
-         (let ((,other-options (deeds::removef ,options ,@option-keywords)))
-           ,@body-forms)))))
+  (flet ((unlist (opt) (if (listp opt) (first opt) opt))
+         (kw (opt) (intern (string opt) "KEYWORD")))
+    (let ((all-options (gensym "OPTIONS"))
+          (option-keywords (loop for opt in options collect (kw (unlist opt)))))
+      `(multiple-value-bind (,all-options ,body) (deeds::parse-into-kargs-and-body ,form)
+         (destructuring-bind (&key ,@options) ,all-options
+           (let ((,other-options (deeds::removef ,all-options ,@option-keywords)))
+             ,@body-forms))))))
