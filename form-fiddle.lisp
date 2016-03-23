@@ -159,12 +159,17 @@
                 finally (setf body list))
           body))
 
+(defun removef (plist &rest args)
+  (loop for (key val) on plist by #'cddr
+        unless (find key args)
+        collect key collect val))
+
 (defmacro with-body-options ((body other-options &rest options) form &body body-forms)
   (flet ((unlist (opt) (if (listp opt) (first opt) opt))
          (kw (opt) (intern (string opt) "KEYWORD")))
     (let ((all-options (gensym "OPTIONS"))
           (option-keywords (loop for opt in options collect (kw (unlist opt)))))
-      `(multiple-value-bind (,all-options ,body) (deeds::parse-into-kargs-and-body ,form)
+      `(multiple-value-bind (,all-options ,body) (split-body-options ,form)
          (destructuring-bind (&key ,@options) ,all-options
-           (let ((,other-options (deeds::removef ,all-options ,@option-keywords)))
+           (let ((,other-options (removef ,all-options ,@option-keywords)))
              ,@body-forms))))))
