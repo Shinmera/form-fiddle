@@ -4,22 +4,7 @@
  Author: Nicolas Hafner <shinmera@tymoon.eu>
 |#
 
-(in-package #:cl-user)
-(defpackage #:form-fiddle
-  (:use #:cl)
-  (:nicknames #:org.shirakumo.form-fiddle)
-  (:export
-   #:lambda-function
-   #:lambda-name
-   #:lambda-qualifiers
-   #:lambda-lambda-list
-   #:lambda-body
-   #:lambda-docstring
-   #:lambda-declarations
-   #:lambda-forms
-   #:split-lambda-form
-   #:with-destructured-lambda-form))
-(in-package #:form-fiddle)
+(in-package #:org.shirakumo.form-fiddle)
 
 (defun declaration-p (form)
   (and (listp form) (eql 'declare (first form))))
