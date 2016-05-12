@@ -170,6 +170,6 @@
     (let ((all-options (gensym "OPTIONS"))
           (option-keywords (loop for opt in options collect (kw (unlist opt)))))
       `(multiple-value-bind (,all-options ,body) (split-body-options ,form)
-         (destructuring-bind (&key ,@options) ,all-options
+         (destructuring-bind (&key ,@options &allow-other-keys) ,all-options
            (let ((,other-options (removef ,all-options ,@option-keywords)))
              ,@body-forms))))))
