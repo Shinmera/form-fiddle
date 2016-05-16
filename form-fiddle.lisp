@@ -161,8 +161,8 @@
 
 (defun removef (plist &rest args)
   (loop for (key val) on plist by #'cddr
-        unless (find key args)
-        collect key collect val))
+        unless (find key args) collect key
+        unless (find key args) collect val))
 
 (defmacro with-body-options ((body other-options &rest options) form &body body-forms)
   (flet ((unlist (opt) (if (listp opt) (first opt) opt))
