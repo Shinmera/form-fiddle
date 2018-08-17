@@ -11,7 +11,9 @@
   :author "Nicolas Hafner <shinmera@tymoon.eu>"
   :maintainer "Nicolas Hafner <shinmera@tymoon.eu>"
   :description "A collection of utilities to destructure lambda forms."
-  :homepage "https://github.com/Shinmera/form-fiddle"
+  :homepage "https://Shinmera.github.io/form-fiddle/"
+  :bug-tracker "https://github.com/Shinmera/form-fiddle/issues"
+  :source-control (:git "https://github.com/Shinmera/form-fiddle.git")
   :serial T
   :components ((:file "package")
                (:file "form-fiddle")
