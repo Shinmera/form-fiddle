@@ -7,7 +7,7 @@
 (asdf:defsystem form-fiddle
   :name "Form-Fiddle"
   :version "1.1.0"
-  :license "Artistic"
+  :license "zlib"
   :author "Nicolas Hafner <shinmera@tymoon.eu>"
   :maintainer "Nicolas Hafner <shinmera@tymoon.eu>"
   :description "A collection of utilities to destructure lambda forms."
