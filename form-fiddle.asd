@@ -5,9 +5,9 @@
   :author "Yukari Hafner <shinmera@tymoon.eu>"
   :maintainer "Yukari Hafner <shinmera@tymoon.eu>"
   :description "A collection of utilities to destructure lambda forms."
-  :homepage "https://Shinmera.github.io/form-fiddle/"
-  :bug-tracker "https://github.com/Shinmera/form-fiddle/issues"
-  :source-control (:git "https://github.com/Shinmera/form-fiddle.git")
+  :homepage "https://shinmera.com/docs/form-fiddle/"
+  :bug-tracker "https://shinmera.com/project/form-fiddle/issues"
+  :source-control (:git "https://shinmera.com/project/form-fiddle.git")
   :serial T
   :components ((:file "package")
                (:file "form-fiddle")
