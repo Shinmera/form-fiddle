@@ -1,21 +1,4 @@
-About Form-Fiddle
------------------
-Often times I need to destructure a form definition in a macro. This is a set of simple utilities to help with that.
+# This repository has [moved](https://shinmera.com/projects/form-fiddle)!
+Due to Microsoft's continued enshittification of the platform this repository has been moved to [Codeberg](https://shinmera.com/projects/form-fiddle) in August of 2025. It will not receive further updates or patches. **Issues and pull requests will not be looked at here either**, please submit your patches and issue tickets on Codeberg, or send them directly via good old email patches to [shirakumo@tymoon.eu](mailto:shirakumo@tymoon.eu).
 
-How To
-------
-There's individual functions to extract each part of a lambda-definition-form: function, name, qualifiers, lambda-list, body, declarations, docstring and the forms. You can get all in one with `split-lambda-form`, or directly as a binding macro with `with-destructured-lambda-form`.
-
-    (split-lambda-form '(defun lambda-body (lambda-form)
-                          (cddr lambda-form)))
-
-    (with-destructured-lambda-form (:forms forms)
-        '(defmacro foo (bar)
-           (declare (ignore bar))
-           "Testing macro!"
-           (print "test!"))
-      forms)
-
-See Also
---------
-* [Lambda-Fiddle](https://shinmera.github.io/lambda-fiddle) To destructure lambda-lists.
+Thanks.
